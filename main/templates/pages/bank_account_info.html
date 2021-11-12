@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Счета{% endblock %}
+
+{% block content %}
+<h1>Информация о счёте</h1>
+<li>Номер счёта: {{ bank_account.id }}</li>
+<li>Баланс счёта: {{ bank_account.balance }}</li>
+<li>Входящих переводов: {{ len_accepted_transfers }}</li>
+<li>Исходящих переводов: {{ len_completed_transfers }}</li>
+{% endblock %}

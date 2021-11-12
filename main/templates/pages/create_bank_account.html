@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Создать счёт{% endblock %}
+
+{% block content %}
+<h1>Создать счёт</h1>
+<form action="." method="post">
+    {{ bank_account_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Создать счёт"></p>
+</form>
+{% endblock %}

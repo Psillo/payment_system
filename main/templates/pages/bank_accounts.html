@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Счёт{% endblock %}
+
+{% block content %}
+<h1>Счёт</h1>
+<p>
+    {% if bank_accounts %}
+    {% for bank_account in bank_accounts %}
+        <li>№<a href="{% url "bank_account_info" bank_account.id %}">{{ bank_account.id }}</a> счёт.</li>
+    {% endfor %}
+    {% else %}
+    У вас нет ни одного счёта!
+    {% endif %}
+    <a href="{% url "create_bank_account" %}">Создать счёт.</a>
+</p>
+{% endblock %}

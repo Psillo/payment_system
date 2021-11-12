@@ -1,0 +1,52 @@
+version: '3.8'
+
+volumes:
+    pg_project:
+
+services:
+    pg_db:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_PASSWORD=${DB_PASS}
+            - POSTGRES_USER=${DB_USER}
+            - POSTGRES_DB=${DB}
+        volumes:
+            - pg_project:/var/lib/postgresql/data
+        ports:
+            - ${DB_PORT:-5432}:5432
+
+    payment.system:
+        build:
+            context: .
+        command: sh -c "python manage.py collectstatic --no-input && python manage.py makemigrations main && python manage.py migrate && gunicorn --bind ${APP_HOST}:${APP_PORT} --workers ${GUNICORN_WORKERS} payment_system.wsgi --env DJANGO_SETTINGS_MODULE=payment_system.settings"
+        container_name: payment.system
+        expose:
+            - "${APP_PORT}"
+        hostname: ${APP_HOST}
+        image: payment.system-image
+        restart: on-failure
+        network_mode: "host"
+    
+    celery_worker.payment_system:
+        image: payment.system-image
+        command: sh -c "/payment_system/wait-for ${APP_HOST}:${APP_PORT} -- celery -A payment_system worker --concurrency ${CELERY_CONCURRENCY} -n ${CELERY_NODE_NAME}"
+        depends_on:
+            - payment.system
+        deploy:
+            mode: ${CELERY_DEPLOY_MODE}
+            replicas: ${CELERY_CONTAINER_REPLICAS}
+            restart_policy:
+                condition: on-failure
+        restart: on-failure
+        network_mode: "host"
+
+    celery_flower.payment_system:
+        image: payment.system-image
+        command: sh -c "/payment_system/wait-for ${APP_HOST}:${APP_PORT} -- celery -A payment_system flower --port=${FLOWER_PORT} ----basic_auth=${FLOWER_AUTH}"
+        container_name: celery_flower.payment_system
+        depends_on:
+            - payment.system
+            - celery_worker.payment_system
+        restart: on-failure
+        network_mode: "host"

@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link href="{% static "css/base.css" %}" rel="stylesheet">
+</head>
+
+<body>
+  <div id="header">
+    <span class="logo">Платёжная система</span>
+    {% if request.user.is_authenticated %}
+    <ul class="menu">
+      <li {% if section == "bank_accounts" %}class="selected" {% endif %}>
+        <a href="{% url "bank_accounts" %}">Счета</a>
+      </li>
+      <li {% if section == "transfers" %}class="selected" {% endif %}>
+        <a href="{% url "transfers" %}">Денежные переводы</a>
+      </li>
+      <li {% if section == "statistics_of_incoming_transfers" %}class="selected" {% endif %}>
+        <a href="{% url "statistics_of_incoming_transfers" %}">Статистика исходящих денежных переводов</a>
+      </li>
+      <li {% if section == "outbound_transfers_statistics" %}class="selected" {% endif %}>
+        <a href="{% url "outbound_transfers_statistics" %}">Статистика входящих денежных переводов</a>
+      </li>
+    </ul>
+    {% endif %}
+
+    <span class="user">
+      {% if request.user.is_authenticated %}
+      Hello {{ request.user }},
+      <a href="{% url "logout" %}">Выход</a>
+      {% else %}
+      <a href="{% url "login" %}">Вход</a>
+      {% endif %}
+    </span>
+  </div>
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li class="{{ message.tags }}">
+      {{ message|safe }}
+      <a href="#" class="close">x</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+
+</html>

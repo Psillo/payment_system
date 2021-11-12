@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика входящих переводов{% endblock %}
+
+{% block content %}
+<form action="." method="get">
+    <input name="search" type="search" placeholder="Поиск...">
+    <p><b>Сортировать по:</b></p>
+    <select name="order">
+        <option value="-">Убыванию</option>
+        <option value="+">Возрастанию</option>
+    </select>
+    <p><input type="radio" name="order_by" value="id">id<Br>
+    <input type="radio" name="order_by" value="date">Дате<Br>
+    <input type="radio" name="order_by" value="amount">Сумме</p>
+</form>
+<h1>Статистика входящих переводов</h1>
+{% if page_outbound_transfers.object_list %}
+    {% for outbound_transfers in page_outbound_transfers.object_list %}
+        <li>id: {{ outbound_transfers.id }}
+            От кого: {{ outbound_transfers.user_to }}
+            Со счёта: {{ outbound_transfers.of }}
+            На ваш счёт: {{ outbound_transfers.to }}
+            Сумма: {{ outbound_transfers.amount }}
+            Дата: {{ outbound_transfers.date }}
+        </li>
+    {% endfor %}
+{% else %}
+    У вас нет ни одного входящего перевода!
+{% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_outbound_transfers.has_previous %}
+        <a href="?page={{ page_outbound_transfers.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_outbound_transfers.number }} of {{ page_outbound_transfers.paginator.num_pages }}.
+        </span>
+        {% if page_outbound_transfers.has_next %}
+        <a href="?page={{ page_outbound_transfers.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

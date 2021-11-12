@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Денежные переводы{% endblock %}
+
+{% block content %}
+<h1>Перевести деньги.</h1>
+<form action="." method="post">
+    {{ transfer_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Перевести"></p>
+</form>
+{% endblock %}
