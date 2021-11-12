@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
     pg_project:
+    redisdata:
 
 services:
     pg_db:
@@ -15,6 +16,13 @@ services:
             - pg_project:/var/lib/postgresql/data
         ports:
             - ${DB_PORT:-5432}:5432
+    
+    redis:
+        container_name: 'redis'
+        image: 'redis:6.2.5-alpine'
+        ports:
+          - ${REDIS_HOST}:${REDIS_PORT}:${REDIS_PORT}
+        restart: on-failure
 
     payment.system:
         build:
