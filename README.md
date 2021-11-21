@@ -11,3 +11,4 @@
 ```
 . stop_app.sh
 ```
+Задание: https://drive.google.com/file/d/1O8Z7luohN0ta4ckFjO8VmGN-TPtZGXDB/
