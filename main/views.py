@@ -86,15 +86,11 @@ def statistics_of_incoming_transfers(request):
     ) if request.GET.get('order_by') else 'id'
 
     try:
-        incoming_transfers = list(
-            request.user.completed_transfers.filter(
-                id__contains=search
-            ).order_by(order+order_by)
-        )
+        incoming_transfers = request.user.completed_transfers.filter(
+            id__contains=search
+        ).order_by(order+order_by)
     except:
-        incoming_transfers = list(
-            request.user.completed_transfers.all()
-        )
+        incoming_transfers = request.user.completed_transfers.all()
 
     incoming_transfers_paginator = Paginator(incoming_transfers, 10)
     page = request.GET.get('page')
@@ -130,15 +126,11 @@ def outbound_transfers_statistics(request):
     ) if request.GET.get('order_by') else 'id'
 
     try:
-        outbound_transfers = list(
-            request.user.accepted_transfers.filter(
-                id__contains=search
-            ).order_by(order+order_by)
-        )
+        outbound_transfers = request.user.accepted_transfers.filter(
+            id__contains=search
+        ).order_by(order+order_by)
     except:
-        outbound_transfers = list(
-            request.user.accepted_transfers.all()
-        )
+        outbound_transfers = request.user.accepted_transfers.all()
 
     outbound_transfers_paginator = Paginator(outbound_transfers, 10)
     page = request.GET.get('page')
