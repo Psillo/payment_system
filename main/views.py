@@ -46,16 +46,8 @@ def bank_accounts(request):
 @login_required
 def bank_account_info(request, id):
     bank_account = BankAccount.objects.get(id=id)
-    len_completed_transfers = len(
-        list(
-            bank_account.transfers_of.all()
-        )
-    )
-    len_accepted_transfers = len(
-        list(
-            bank_account.transfers_to.all()
-        )
-    )
+    len_completed_transfers = bank_account.transfers_of.count()
+    len_accepted_transfers = bank_account.transfers_to.count()
     return render(request,
                   'pages/bank_account_info.html',
                   {'section': 'bank_accounts',
